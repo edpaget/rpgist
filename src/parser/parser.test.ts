@@ -1,9 +1,19 @@
 import { RPGist } from "./parser";
 
-const input = "12345"
-
 describe("RPGIST", () => {
-  it("produces the expected output", () => {
-    expect(RPGist.parse(input)).toBeTruthy();
+  describe("simple input", () => {
+    const input = "12345"
+
+    it("parses a NumberLiteral", () => {
+      expect(RPGist.NumberLiteral.tryParse(input)).toEqual(12345);
+    });
+
+    it("parses a BasicValue", () => {
+      expect(RPGist.BasicValue.tryParse(input)).toEqual(12345);
+    });
+
+    it("parses an Expression ", () => {
+      expect(RPGist.Expression.tryParse(input)).toEqual(12345);
+    });
   });
 });

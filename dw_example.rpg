@@ -1,0 +1,49 @@
+# this is how you leave a comment
+# we stop parsing until the end of the line when we see a "#"-sign
+
+system DnDWorld, label: "DnD World"
+  section CharacterInfo, label: "Character Information"
+    name, type: UserInput[String]
+    level, type: UserInput[Increment[Number, 1]]
+    species, type: UserInput[Select[Species]] # Can reference what will be defined later
+
+  section CharacterStats, label: "Character Stats"
+    STR, label: "Strength", type: UserInput[Number]
+    DEX, label: "Dexterity", type: UserInput[Number]
+    CON, label: "Constitution", type: UserInput[Number]
+    WIS, label: "Wisdom", type: UserInput[Number]
+    INT, label: "Intelligence", type: UserInput[Number]
+    CHA, label: "Charisma", type: UserInput[Number]
+
+  section CharacterFeats, label: "Feats"
+    total_allowed, type: Calculation[=, level]
+    list feats, type: UserInput[Select[Feats]],
+
+  section CharacterWeapons, label: "Weapons"
+    list weapons, type: UserInput[Select[Weapons]],
+
+  options Species, label: "Species"
+    Human, label: "Human", constant_effects: {
+      STR + 1,
+      CharacterFeats.total_allowed + 1,
+    }
+    Elf, constant_effects { # Leaving off the label reuses the symbol name as the Label
+      DEX + 1,
+      WISDOM + 1,
+      CharacterFeats.add NaturesFriend,
+    }
+
+  options Weapons
+    option_schema {
+      name: String,
+      damage: DiceCalculation,
+      critial: Range[Number],
+      categories: Tags,
+      prerequisists: Validation[Calculation]
+      reach: String,
+      effective_range_max_range: (Calculation, Calculation)
+      durability: String,
+      craft_difficulty: String,
+      cost: String
+    }
+    load_from "weapons.csv"
